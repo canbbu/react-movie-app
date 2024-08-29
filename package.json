@@ -32,5 +32,10 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "https://nomadcoders.github.io/movie_app_2019/"
+  "homepage": "https://nomadcoders.github.io/movie_app_2019/",
+  "description": "React JS Fundamentals Course (2019 Update!)",
+  "main": "index.js",
+  "devDependencies": {},
+  "author": "",
+  "license": "ISC"
 }
