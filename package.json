@@ -12,7 +12,7 @@
     "react-scripts": "3.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts --openssl-legacy-provider start",
     "build": "react-scripts build",
     "deploy": "gh-pages -d build",
     "predeploy": "npm run build"
@@ -32,7 +32,7 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "https://nomadcoders.github.io/movie_app_2019/",
+  "homepage": "https://github.com/canbbu/react-movie-app.git",
   "description": "React JS Fundamentals Course (2019 Update!)",
   "main": "index.js",
   "devDependencies": {},
