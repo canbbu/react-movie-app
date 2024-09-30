@@ -5,7 +5,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { styled, alpha } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import SearchIcon from '@mui/icons-material/Search';
-import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 
 // Styled components
 const Search = styled('div')(({ theme }) => ({
@@ -54,98 +53,48 @@ function Layout({ login, handleLogout, searchKeyword, handleValueChange, handleL
   const [alignment, setAlignment] = useState('ALL');
   const navigate = useNavigate();
 
-  const handleMenuClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleToggleChange = (event, newAlignment) => {
-    setAlignment(newAlignment);
-    handleMenuClose();
-
-    // Navigate to the respective pages based on the selection
-    switch (newAlignment) {
-      case 'ALL':
-        navigate('/all');
-        break;
-      case 'KOREA':
-        navigate('/korea');
-        break;
-      case 'JAPAN':
-        navigate('/japan');
-        break;
-      default:
-        break;
-    }
+  const handleLoginClick = () => {
+    navigate('/login'); // 로그인 동작 후 /login 경로로 이동
   };
 
   return (
     <div>
       {/* Toolbar */}
       <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
+        <AppBar position="static" sx={{ backgroundColor: '#242424' }}> {/* 배경색 변경 */}
           <Toolbar>
-            <IconButton size="large" edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }} onClick={handleMenuClick}>
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-              keepMounted
-            >
-              {login ? (
-                <MenuItem>
-                  {/* Toggle Button Group in the Menu */}
-                  <ToggleButtonGroup
-                    value={alignment}
-                    exclusive
-                    onChange={handleToggleChange}
-                    aria-label="text alignment"
-                  >
-                    <ToggleButton value="ALL" aria-label="ALL">
-                      ALL
-                    </ToggleButton>
-                    <ToggleButton value="KOREA" aria-label="KOREA">
-                      KOREA
-                    </ToggleButton>
-                    <ToggleButton value="JAPAN" aria-label="JAPAN">
-                      JAPAN
-                    </ToggleButton>
-                  </ToggleButtonGroup>
-                </MenuItem>
-              ) : null}
-            </Menu>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-                GudeHolic System
+                MOVIE JOA
               </Link>
             </Typography>
-            {login ? (
-              <React.Fragment>
-                {/* Login state toolbar and toggle button  */}
-                <Search>
-                  <SearchIconWrapper>
-                    <SearchIcon />
-                  </SearchIconWrapper>
-                  <StyledInputBase
-                    inputProps={{ 'aria-label': 'search' }}
-                    name="searchKeyword"
-                    value={searchKeyword}
-                    onChange={handleValueChange}
-                  />
-                </Search>
-                <Button variant="contained" color="primary" onClick={handleLogout}>
+            
+            <React.Fragment>
+              <Search>
+                <SearchIconWrapper>
+                  <SearchIcon />
+                </SearchIconWrapper>
+                <StyledInputBase
+                  inputProps={{ 'aria-label': 'search' }}
+                  name="searchKeyword"
+                  value={searchKeyword}
+                  onChange={handleValueChange}
+                />
+              </Search>
+              {login ? (
+                <Button variant="contained" style={{ backgroundColor: '#242424' }} onClick={handleLogout}> {/* 버튼 배경색 변경 */}
                   Logout
                 </Button>
-              </React.Fragment>
-            ) : (
-              // If not logged in, you might want to render a login component here
-              <Button variant="contained" color="primary" onClick={() => handleLogin(username, 'password')}>Login</Button>
-            )}
+              ) : (
+                <Button variant="contained" style={{ 
+                  backgroundColor: '#242424', 
+                  borderRadius: '4px', // 수정: 테두리의 둥근 정도를 정하는 값
+                  border: '2px solid #ffffff' // 흰색 테두리 추가
+                }}  onClick={() => handleLoginClick()}> {/* 버튼 배경색 변경 */}
+                  Login
+                </Button>
+              )}
+            </React.Fragment>
           </Toolbar>
         </AppBar>
       </Box>

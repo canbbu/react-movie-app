@@ -28,6 +28,11 @@
   font-size: 12px;
   text-align: center;
   font-weight: 600;
+  color: inherit; /* 기본 색상 상속 */
+  text-decoration: none; /* 기본 밑줄 제거 */
+  font-family: 'Noto Sans JP', sans-serif;
+  
+
 }
 
 .nav a:not(:last-child) {

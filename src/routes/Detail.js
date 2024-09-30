@@ -1,34 +1,35 @@
-import React from "react";
-import "./Detail.css"; // CSS 파일을 따로 만들어 스타일을 적용
+import React, { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import "./Detail.css";
 
-class Detail extends React.Component {
-  componentDidMount() {
-    const { location, history } = this.props;
-    if (location.state === undefined) {
-      history.push("/");
+function Detail() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!location.state) {
+      // location.state가 없으면 홈으로 리다이렉트
+      navigate("/");
     }
-  }
+  }, [location, navigate]);
 
-  render() {
-    const { location } = this.props;
-    console.log(this.props)
-    if (location.state) {
-      return (
-        <div className="detail__container">
-          <div className="detail__poster">
-            <img src={location.state.poster} alt={location.state.title} />
-          </div>
-          <div className="detail__info">
-            <h1>{location.state.title}</h1><br/>
-            <h2>{location.state.genres}</h2><br/>
-            <h3>{location.state.year}</h3><br/>
-            <p>{location.state.summary}</p>
-          </div>
+  if (location.state) {
+    const { poster, title, genres, year, summary } = location.state;
+    return (
+      <div className="detail__container">
+        <div className="detail__poster">
+          <img src={poster} alt={title} />
         </div>
-      );
-    } else {
-      return null;
-    }
+        <div className="detail__info">
+          <h1>{title}</h1>
+          <h2>{genres.join(", ")}</h2>
+          <h3>{year}</h3>
+          <p>{summary}</p>
+        </div>
+      </div>
+    );
+  } else {
+    return null;
   }
 }
 

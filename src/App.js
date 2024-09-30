@@ -5,7 +5,9 @@ import About from "./routes/About";
 import Detail from "./routes/Detail";
 import Layout from "./components/Layout";
 import Navigation from "./components/Navigation";
+import List from "./Page/List"
 import "./App.css";
+import Login from "./Page/Login"
 
 function App() {
   const [login, setLogin] = useState(false);
@@ -88,6 +90,9 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/movie/:id" element={<Detail />} />
+        <Route path="/MyList" element={<List type="my" />} /> {/* Pass 'my' prop */}
+        <Route path="/WatchList" element={<List type="watch" />} /> {/* Pass 'watch' prop */}
+        <Route path="/Login" element={<Login />} /> 
       </Routes>
     </HashRouter>
   );
