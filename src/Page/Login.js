@@ -3,8 +3,11 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import { Avatar, Button, Link, Typography, Box, Input } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 const Login = () => {
+    const navigate = useNavigate();
+    
     const paperStyle = {
         padding: 20,
         height: '70vh',
@@ -26,6 +29,7 @@ const Login = () => {
         backgroundColor: '#242424', 
         border: '2px solid #ffffff', 
     };
+    
 
     return (
         <Paper elevation={12} style={paperStyle}>
@@ -39,10 +43,11 @@ const Login = () => {
                         <Input
                             id="username"
                             placeholder='Enter Your Username'
+                            type='text'
                             required
                             disableUnderline // underline 제거
                             fullWidth
-                            style={{ color: '#FFFFFF' }}
+                            inputProps={{ style: { color: '#FFFFFF' } }}
                         />
                     </Box>
                 </Grid>
@@ -55,7 +60,7 @@ const Login = () => {
                             required
                             disableUnderline // underline 제거
                             fullWidth
-                            style={{ color: '#FFFFFF' }}
+                            inputProps={{ style: { color: '#FFFFFF' } }}
                         />
                     </Box>
                 </Grid>
@@ -66,16 +71,10 @@ const Login = () => {
                     </Button>
                 </Grid>
                 <Grid item>
-                    <Typography >
-                        <Link href="#" style={{ textAlign: 'center', display: 'block' }}>
-                            Forgot Password?
-                        </Link>
-                    </Typography>
-                </Grid>
-                <Grid item>
                 <Typography style={{ color: '#FFFFFF' }}>
                     Don't have an account?
-                    <Link href="#" style={{ textAlign: 'center', display: 'block' }}>
+                    <Link href="/#/register" style={{ textAlign: 'center', display: 'block' }}>
+                    
                         Sign Up Here.
                     </Link>
                 </Typography>

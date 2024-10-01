@@ -8,6 +8,7 @@ import Navigation from "./components/Navigation";
 import List from "./Page/List"
 import "./App.css";
 import Login from "./Page/Login"
+import Register from "./Page/Register"
 
 function App() {
   const [login, setLogin] = useState(false);
@@ -93,6 +94,7 @@ function App() {
         <Route path="/MyList" element={<List type="my" />} /> {/* Pass 'my' prop */}
         <Route path="/WatchList" element={<List type="watch" />} /> {/* Pass 'watch' prop */}
         <Route path="/Login" element={<Login />} /> 
+        <Route path="/Register" element={<Register />} /> 
       </Routes>
     </HashRouter>
   );

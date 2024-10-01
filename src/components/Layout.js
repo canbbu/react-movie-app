@@ -88,9 +88,9 @@ function Layout({ login, handleLogout, searchKeyword, handleValueChange, handleL
               ) : (
                 <Button variant="contained" style={{ 
                   backgroundColor: '#242424', 
-                  borderRadius: '4px', // 수정: 테두리의 둥근 정도를 정하는 값
-                  border: '2px solid #ffffff' // 흰색 테두리 추가
-                }}  onClick={() => handleLoginClick()}> {/* 버튼 배경색 변경 */}
+                  borderRadius: '4px', 
+                  border: '2px solid #ffffff' 
+                }}  onClick={() => handleLoginClick()}> 
                   Login
                 </Button>
               )}
