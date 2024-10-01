@@ -3,24 +3,23 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@emotion/react": "^11.13.3",
-    "@emotion/styled": "^11.13.0",
-    "@mui/icons-material": "^6.1.1",
-    "@mui/material": "^6.1.1",
-    "@mui/styles": "^6.1.1",
-    "axios": "^0.19.0",
-    "gh-pages": "^2.0.1",
-    "prop-types": "^15.7.2",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.2",
-    "react-scripts": "^5.0.1"
+        "@mui/icons-material": "^6.0.2",
+        "axios": "^1.7.7",
+        "bcrypt": "^5.1.1",
+        "body-parser": "^1.20.2",
+        "express": "^4.19.2",
+        "jsonwebtoken": "^9.0.2",
+        "multer": "^1.4.5-lts.1",
+        "mysql": "^2.18.1"
   },
+  "devDependencies": {
+        "concurrently": "^8.2.2"
+    },
   "scripts": {
-    "start": "react-scripts --openssl-legacy-provider start",
-    "build": "react-scripts build",
-    "deploy": "gh-pages -d build",
-    "predeploy": "npm run build"
+        "client": "cd client && npm start",
+        "server": "nodemon server.js",
+        "dev": "concurrently \"npm run server\" \"npm run client\"",
+        "start": "nodemon server.js"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -39,12 +38,7 @@
   },
   "homepage": "/",
   "description": "React JS Fundamentals Course (2019 Update!)",
-  "main": "index.js",
+  "main": "server.js",
   "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@babel/core": "^7.25.2",
-    "@babel/plugin-proposal-optional-chaining": "^7.21.0",
-    "@babel/preset-env": "^7.25.4"
-  }
+  "license": "ISC"
 }

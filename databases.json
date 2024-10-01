@@ -1,0 +1,7 @@
+{
+    "host": "localhost",
+    "user": "root",
+    "password": "adminIsCanbbu",
+    "database": "movie",
+    "port": 3306
+}
