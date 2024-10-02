@@ -48,7 +48,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function Layout({ login, handleLogout, searchKeyword, handleValueChange, handleLogin, username }) {
+function Layout({ searchKeyword, handleValueChange, login, handleLogout }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [alignment, setAlignment] = useState('ALL');
   const navigate = useNavigate();
