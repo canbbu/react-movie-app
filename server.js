@@ -20,7 +20,8 @@ const upload = multer({ dest: './upload' });
 
 // 라우터 설정
 // router.get('/', ctrl.output.dataDisplay);
-// router.post('/', upload.single('image'), ctrl.process.dataUpdate);
+router.post('/userMovies/:movieId', ctrl.process.listdataUpdate);
+router.get('/userMovies/:userId/:movieId', ctrl.process.listDataGet);
 router.post('/login', ctrl.process.login);
 // router.delete('/:id', ctrl.process.delete);
 

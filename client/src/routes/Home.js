@@ -31,8 +31,6 @@ class Home extends React.Component {
           }
         }
       );
-
-      console.log(`Fetched ${category} Movies: `, movies);
       return movies;
     } catch (error) {
       console.error(`Error fetching ${category} movies:`, error);

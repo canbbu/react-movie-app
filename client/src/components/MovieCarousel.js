@@ -27,13 +27,8 @@ function MovieCarousel({ movies }) {
   const isPrevDisabled = currentIndex === 0 || movies.length === 0;
   const isNextDisabled = currentIndex >= Math.max(0, movies.length - itemsToShow);
   
-  console.log("Current Index: " + currentIndex);
-  console.log("movie.length : " + movies.length);
-  console.log("itemsToShow: " + itemsToShow);
-  console.log("count: " + movies.length -itemsToShow);
   // 상태가 업데이트된 후에 currentIndex 값을 콘솔에 출력
   React.useEffect(() => {
-    console.log("Current Index: " + currentIndex);
   }, [currentIndex]);
   
   return (

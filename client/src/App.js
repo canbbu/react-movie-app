@@ -30,6 +30,7 @@ function App() {
     try{
       localStorage.removeItem('login');
       localStorage.removeItem('username');
+      localStorage.removeItem('userId');
       setLogin(false);
       setUsername('');
       setSearchKeyword('');
@@ -54,10 +55,13 @@ function App() {
       });
 
       const data = await response.json();
+      console.log("Fetched movie status data:", data); // Log the data to the console
 
       if (response.ok) {
         localStorage.setItem('login', 'true');
         localStorage.setItem('username', username);
+        localStorage.setItem('userId', data.userId); // 유저 ID 저장
+
         setLogin(true);
         setUsername(username);
       } else {
@@ -82,8 +86,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
-        <Route path="/movie/:id" element={<Detail />} />
-        <Route path="/MyList" element={<List type="my" />} />
+        <Route path="/movie/:id" element={<Detail/>} />
+        <Route path="/MyList" element={<List type="my"/>} />
         <Route path="/WatchList" element={<List type="watch" />} />
         <Route path="/login" element={<Login handleLogin={handleLogin} />} /> {/* handleLogin 전달 */}
         <Route path="/register" element={<Register />} />
