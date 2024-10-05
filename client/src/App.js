@@ -3,8 +3,8 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import Home from "./routes/Home";
 import About from "./routes/About";
 import Detail from "./routes/Detail";
-import Layout from "./components/Layout";
-import Navigation from "./components/Navigation";
+import Toolbar from "./Layout/Toolbar";
+import Navigation from "./Layout/Navigation";
 import List from "./Page/List";
 import "./App.css";
 import Login from "./Page/Login";
@@ -75,7 +75,7 @@ function App() {
 
   return (
     <HashRouter>
-      <Layout
+      <Toolbar
         login={login}
         handleLogout={handleLogout}
         searchKeyword={searchKeyword}

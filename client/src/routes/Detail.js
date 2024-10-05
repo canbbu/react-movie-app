@@ -28,8 +28,9 @@ function Detail() {
   const fetchMovieStatus = async (userId, movieId) => {
     if(isLoggedIn){
       try {
-        const response = await fetch(`/userMovies/${userId}/${movieId}`); // Include movieId in the URL
+        const response = await fetch(`/detail/${userId}/${movieId}`); // Include movieId in the URL
         const data = await response.json();
+        console.log("data :" + data)
         if (data) {
           setIsWished(data.isWished);
           setIsWatched(data.isWatched);

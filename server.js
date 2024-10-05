@@ -14,14 +14,11 @@ app.use('/image', express.static('upload'));
 // 라우터를 app에 연결
 app.use('/', router);
 
-// multer 설정
-const multer = require('multer');
-const upload = multer({ dest: './upload' });
 
 // 라우터 설정
-// router.get('/', ctrl.output.dataDisplay);
+router.get('/userMovies/:type/:userId', ctrl.output.wishedData);
+router.get('/detail/:userId/:movieId', ctrl.output.listDataGet);
 router.post('/userMovies/:movieId', ctrl.process.listdataUpdate);
-router.get('/userMovies/:userId/:movieId', ctrl.process.listDataGet);
 router.post('/login', ctrl.process.login);
 // router.delete('/:id', ctrl.process.delete);
 

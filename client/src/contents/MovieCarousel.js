@@ -1,6 +1,6 @@
 // MovieCarousel.js
 import React from "react";
-import Movie from "../components/Movie";
+import Movie from "./Movie";
 import PropTypes from "prop-types";
 import "./MovieCarousel.css"; // 스타일을 위한 CSS 파일 추가
 

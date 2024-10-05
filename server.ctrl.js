@@ -17,14 +17,59 @@ const connection = mysql.createConnection({
 connection.connect();
 
 const output = {
-  dataDisplay: (req, res) => {
-    console.log("dataDisplay in ")
-    const query = "SELECT * FROM CUSTOMER WHERE isDeleted = 0";
-    connection.query(query, (err, rows) => {
-      res.send(rows);
-      console.log(err);
+  listDataGet: (req, res) => {
+    console.log("listDataGet in ");
+  
+    const { userId, movieId } = req.params;
+  
+    // SQL query to select data from the Favorites table
+    let sql = 'SELECT * FROM Favorites WHERE user_id = ? and movie_id = ?';
+  
+    connection.query(sql, [userId, movieId], (err, rows) => {
+      if (err) {
+        console.error("Error executing query:", err); // Log the specific error
+        return res.status(500).send({ error: 'Database error' });
+      }
+      if (rows.length > 0) { // Corrected from 'results' to 'rows'
+        res.json(rows[0]); // Return the first result
+      } else {
+        res.json({ isWished: false, isWatched: false }); // Default values if no entry exists
+      }
     });
   },
+
+  wishedData: (req, res) => {
+    console.log("wishedData in ");
+  
+    const { userId, type } = req.params; // Get userId and type from the request parameters
+  
+    // Set the condition based on the type (my -> wishList, watch -> watchedList)
+    let sql;
+    if (type === "my") {
+      sql = 'SELECT * FROM Favorites WHERE user_id = ? AND isWished = true';
+    } else if (type === "watch") {
+      sql = 'SELECT * FROM Favorites WHERE user_id = ? AND isWatched = true';
+    } else {
+      return res.status(400).json({ error: "Invalid type parameter" }); // Return error if type is invalid
+    }
+  
+    // Execute the SQL query
+    connection.query(sql, [userId], (err, rows) => {
+      if (err) {
+        console.error("Error executing query:", err); // Log the specific error
+        return res.status(500).send({ error: 'Database error' });
+      }
+      
+      if (rows.length > 0) {
+        res.json(rows); // Return all results as an array
+      } else {
+        res.json({
+          message: "No data found",  // Message indicating no data found
+          data: null              // Optionally send 'null' or an empty array
+        });
+      }
+    });
+  },  
 };
 
 const process = {
@@ -34,9 +79,6 @@ const process = {
     const movieId = req.params.movieId;
     const isWished = req.body.isWished;
     const isWatched = req.body.isWatched;
-  
-    console.log("userId : "+ userId);
-    console.log("movieId : "+ movieId);
   
     // Use INSERT ... ON DUPLICATE KEY UPDATE
     let sql = `
@@ -55,40 +97,7 @@ const process = {
       res.send({ success: true, message: "Record added or updated successfully." });
     });
   },
-
-  listDataGet: (req, res) => {
-    console.log("dataGet in ");
   
-    const { userId, movieId } = req.params;
-    console.log("userId :" + userId);
-    console.log("movieId :" + movieId);
-  
-    // SQL query to select data from the Favorites table
-    let sql = 'SELECT * FROM Favorites WHERE user_id = ? and movie_id = ?';
-  
-    connection.query(sql, [userId, movieId], (err, rows) => {
-      if (err) {
-        console.error("Error executing query:", err); // Log the specific error
-        return res.status(500).send({ error: 'Database error' });
-      }
-      if (rows.length > 0) { // Corrected from 'results' to 'rows'
-        res.json(rows[0]); // Return the first result
-      } else {
-        res.json({ isWished: false, isWatched: false }); // Default values if no entry exists
-      }
-    });
-  },
-  
-  
-
-  delete: (req, res) => {
-    console.log("delete in ")
-    let sql = 'UPDATE CUSTOMER SET isDeleted = 1 WHERE id = ?';
-    let params = [req.params.id];
-    connection.query(sql, params, (err, rows) => {
-      res.send(rows);
-    });
-  },
 
   login: (req, res) => {
     console.log("login in ");

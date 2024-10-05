@@ -1,7 +1,7 @@
 // Home.js
 import React from "react";
 import axios from "axios";
-import MovieCarousel from "../components/MovieCarousel"; // MovieCarousel 추가
+import MovieCarousel from "../contents/MovieCarousel"; // MovieCarousel 추가
 import "./Home.css";
 
 class Home extends React.Component {
