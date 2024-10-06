@@ -14,6 +14,7 @@ function App() {
   const [login, setLogin] = useState(false);
   const [username, setUsername] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
+  
 
   // 앱 시작 시 localStorage에서 로그인 상태 확인
   useEffect(() => {
@@ -74,25 +75,25 @@ function App() {
   };
 
   return (
-    <HashRouter>
-      <Toolbar
-        login={login}
-        handleLogout={handleLogout}
-        searchKeyword={searchKeyword}
-        handleValueChange={handleValueChange}
-        username={username}
-      />
-      <Navigation />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/movie/:id" element={<Detail/>} />
-        <Route path="/MyList" element={<List type="my"/>} />
-        <Route path="/WatchList" element={<List type="watch" />} />
-        <Route path="/login" element={<Login handleLogin={handleLogin} />} /> {/* handleLogin 전달 */}
-        <Route path="/register" element={<Register />} />
-      </Routes>
-    </HashRouter>
+      <HashRouter>
+        <Toolbar
+          login={login}
+          handleLogout={handleLogout}
+          searchKeyword={searchKeyword}
+          handleValueChange={handleValueChange}
+          username={username}
+        />
+        <Navigation />
+        <Routes>
+          <Route path="/" element={<Home searchKeyword={searchKeyword}/>} />
+          <Route path="/about" element={<About />} />
+          <Route path="/movie/:id" element={<Detail/>} />
+          <Route path="/MyList" element={<List type="my" searchKeyword={searchKeyword}/>} />
+          <Route path="/WatchList" element={<List type="watch" searchKeyword={searchKeyword} />} />
+          <Route path="/login" element={<Login handleLogin={handleLogin} />} /> {/* handleLogin 전달 */}
+          <Route path="/register" element={<Register />} />
+        </Routes>
+      </HashRouter>
   );
 }
 

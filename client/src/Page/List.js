@@ -9,6 +9,7 @@ class List extends React.Component {
   state = {
     isLoading: true,
     movies: [], // Initialize movies as an empty array
+    filteredMovies: [], // Store filtered movies based on the searchKeyword
   };
 
   // Function to refresh movies based on type (wishList or watchList)
@@ -19,7 +20,7 @@ class List extends React.Component {
     if (movieList.length > 0) {
       await this.getMovies(movieList); // Fetch full movie details based on IDs
     } else {
-      this.setState({ movies: [], isLoading: false }); // Clear movies if none found
+      this.setState({ movies: [], filteredMovies: [], isLoading: false }); // Clear movies and filteredMovies if none found
     }
   };
 
@@ -67,46 +68,70 @@ class List extends React.Component {
         isWatched: movieList[index].isWatched // Get isWatched status from movieList
       }));
 
-      // Update the state with fetched movies
-      this.setState({ movies, isLoading: false });
+      // Update the state with fetched movies and apply the filter
+      this.setState({ movies, isLoading: false }, this.applyFilter);
     } catch (error) {
       console.error("Error fetching movies:", error);
       this.setState({ isLoading: false }); // Stop loading if there's an error
     }
   };
 
+  // Apply search filtering based on searchKeyword
+  applyFilter = () => {
+    const { searchKeyword = "" } = this.props; // Default to an empty string if searchKeyword is not provided
+    const { movies } = this.state;
+
+
+    // If no searchKeyword, show all movies
+    if (!searchKeyword) {
+      this.setState({ filteredMovies: movies });
+    } else {
+      // Filter movies based on searchKeyword (case-insensitive)
+      const filteredMovies = movies.filter(movie =>
+        movie.title.toLowerCase().includes(searchKeyword.toLowerCase())
+      );
+      this.setState({ filteredMovies });
+    }
+  };
+
   // This function will be called when props or state are updated
   async componentDidUpdate(prevProps) {
-    // Check if the `type` prop has changed
+    // Check if the `type` or `searchKeyword` prop has changed
     if (prevProps.type !== this.props.type) {
-      // Fetch the movie list based on the new type
       const movieList = await this.getMoviesByType(this.props.type);
-
-      // Fetch the movie data from TMDb API using the movie list
       if (movieList.length > 0) {
         this.getMovies(movieList); // Fetch movie details if list is not empty
       } else {
-        this.setState({ isLoading: false }); // Stop loading if no movies found
+        this.setState({ isLoading: false });
       }
+    }
+
+    // If the searchKeyword changes, apply the filter
+    if (prevProps.searchKeyword !== this.props.searchKeyword) {
+      this.applyFilter(); // Filter movies whenever searchKeyword updates
     }
   }
 
   async componentDidMount() {
     const { type } = this.props;
 
-    // Step 1: Fetch the correct movie list (wishList or watchList) based on the `type` prop
-    const movieList = await this.getMoviesByType(type);
-
-    // Step 2: Fetch the movie data from TMDb API using the movie list
-    if (movieList.length > 0) {
-      this.getMovies(movieList); // Fetch movie details if list is not empty
-    } else {
-      this.setState({ isLoading: false }); // Stop loading if no movies found
+    
+    try {
+      const movieList = await this.getMoviesByType(type);
+      if (movieList.length > 0) {
+        await this.getMovies(movieList);
+      } else {
+        this.setState({ movies: [], isLoading: false });
+      }
+    } catch (error) {
+      console.error("Error during initial movie loading:", error);
+      this.setState({ isLoading: false });
     }
   }
+  
 
   render() {
-    const { isLoading, movies } = this.state;
+    const { isLoading, filteredMovies } = this.state; // Use filteredMovies for rendering
     const { type } = this.props; // Get the type from props
 
     return (
@@ -117,8 +142,8 @@ class List extends React.Component {
           </div>
         ) : (
           <div className="movieList">
-            {movies.length > 0 ? (
-              movies.map(movie => (
+            {filteredMovies.length > 0 ? (
+              filteredMovies.map(movie => (
                 <UserMovies
                   key={movie.id}
                   id={movie.id}

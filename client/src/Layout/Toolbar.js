@@ -49,13 +49,12 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 function Layout({ searchKeyword, handleValueChange, login, handleLogout }) {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [alignment, setAlignment] = useState('ALL');
   const navigate = useNavigate();
 
   const handleLoginClick = () => {
     navigate('/login'); // 로그인 동작 후 /login 경로로 이동
   };
+
 
   return (
     <div>
