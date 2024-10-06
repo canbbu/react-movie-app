@@ -48,8 +48,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function Layout({ searchKeyword, handleValueChange, login, handleLogout }) {
+function Layout({ searchKeyword, handleValueChange, login, nickName , handleLogout }) {
   const navigate = useNavigate();
+  const username = localStorage.getItem('username');
 
   const handleLoginClick = () => {
     navigate('/login'); // 로그인 동작 후 /login 경로로 이동
@@ -67,6 +68,15 @@ function Layout({ searchKeyword, handleValueChange, login, handleLogout }) {
                 MOVIE JOA
               </Link>
             </Typography>
+
+            {login? 
+              <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Welcome to {nickName}'s Movie world!
+              </Typography>
+              :
+              null
+            }
+            
             
             <React.Fragment>
               <Search>

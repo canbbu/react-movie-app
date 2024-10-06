@@ -18,6 +18,7 @@ app.use('/', router);
 // 라우터 설정
 router.get('/userMovies/:type/:userId', ctrl.output.wishedData);
 router.get('/detail/:userId/:movieId', ctrl.output.listDataGet);
+router.post('/register', ctrl.process.register);
 router.post('/userMovies/:movieId', ctrl.process.listdataUpdate);
 router.post('/login', ctrl.process.login);
 // router.delete('/:id', ctrl.process.delete);

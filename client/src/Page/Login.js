@@ -8,7 +8,6 @@ import { useState } from 'react';
 const Login = ({ handleLogin }) => {  // handleLogin prop 추가
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
 
   const paperStyle = {
     padding: 20,

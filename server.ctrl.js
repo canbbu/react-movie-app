@@ -1,131 +1,157 @@
 "use strict"
 
-const mysql = require('mysql');
+const mysql = require('mysql2/promise'); // Use promise-based mysql2
 const fs = require('fs');
 const express = require('express');
 
+// Load database configuration from JSON
 const data = fs.readFileSync('./databases.json');
 const conf = JSON.parse(data);
 
-const connection = mysql.createConnection({
-  host : conf.host,
-  user : conf.user,
-  password : conf.password,
-  database : conf.database,
-  port : conf.port,
+// Create a connection pool instead of a single connection
+const pool = mysql.createPool({
+  host: conf.host,
+  user: conf.user,
+  password: conf.password,
+  database: conf.database,
+  port: conf.port,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
 });
-connection.connect();
 
+// Output object for API handlers
 const output = {
-  listDataGet: (req, res) => {
+  listDataGet: async (req, res) => {
     console.log("listDataGet in ");
-  
     const { userId, movieId } = req.params;
-  
+
     // SQL query to select data from the Favorites table
-    let sql = 'SELECT * FROM Favorites WHERE user_id = ? and movie_id = ?';
-  
-    connection.query(sql, [userId, movieId], (err, rows) => {
-      if (err) {
-        console.error("Error executing query:", err); // Log the specific error
-        return res.status(500).send({ error: 'Database error' });
-      }
-      if (rows.length > 0) { // Corrected from 'results' to 'rows'
+    const sql = 'SELECT * FROM Favorites WHERE user_id = ? AND movie_id = ?';
+
+    try {
+      const [rows] = await pool.query(sql, [userId, movieId]); // Use pool.query
+      if (rows.length > 0) {
         res.json(rows[0]); // Return the first result
       } else {
         res.json({ isWished: false, isWatched: false }); // Default values if no entry exists
       }
-    });
+    } catch (err) {
+      console.error("Error executing query:", err); // Log the specific error
+      return res.status(500).send({ error: 'Database error' });
+    }
   },
 
-  wishedData: (req, res) => {
+  wishedData: async (req, res) => {
     console.log("wishedData in ");
-  
-    const { userId, type } = req.params; // Get userId and type from the request parameters
-  
-    // Set the condition based on the type (my -> wishList, watch -> watchedList)
+    const { userId, type } = req.params;
+
     let sql;
     if (type === "my") {
       sql = 'SELECT * FROM Favorites WHERE user_id = ? AND isWished = true';
     } else if (type === "watch") {
       sql = 'SELECT * FROM Favorites WHERE user_id = ? AND isWatched = true';
     } else {
-      return res.status(400).json({ error: "Invalid type parameter" }); // Return error if type is invalid
+      return res.status(400).json({ error: "Invalid type parameter" });
     }
-  
-    // Execute the SQL query
-    connection.query(sql, [userId], (err, rows) => {
-      if (err) {
-        console.error("Error executing query:", err); // Log the specific error
-        return res.status(500).send({ error: 'Database error' });
-      }
-      
+
+    try {
+      const [rows] = await pool.query(sql, [userId]);
       if (rows.length > 0) {
-        res.json(rows); // Return all results as an array
+        res.json(rows);
       } else {
         res.json({
-          message: "No data found",  // Message indicating no data found
-          data: null              // Optionally send 'null' or an empty array
+          message: "No data found",
+          data: null
         });
       }
-    });
-  },  
+    } catch (err) {
+      console.error("Error executing query:", err);
+      return res.status(500).send({ error: 'Database error' });
+    }
+  }
 };
 
 const process = {
-  listdataUpdate: (req, res) => {
+  listdataUpdate: async (req, res) => {
     console.log("dataUpdate in ");
-    const userId = req.body.userId;
-    const movieId = req.params.movieId;
-    const isWished = req.body.isWished;
-    const isWatched = req.body.isWatched;
-  
-    // Use INSERT ... ON DUPLICATE KEY UPDATE
-    let sql = `
-      INSERT INTO Favorites (user_id, movie_id, added_date, isWished, isWatched)
-      VALUES (?, ?, now(), ?, ?)
-      ON DUPLICATE KEY UPDATE
-        isWished = ?, isWatched = ?`;
-  
-    let params = [userId, movieId, isWished, isWatched, isWished, isWatched]; // Params for update section as well
-  
-    connection.query(sql, params, (err, result) => {
-      if (err) {
-        console.error("Error during data insertion or update:", err);
-        return res.status(500).send("Error inserting/updating data");
-      }
-      res.send({ success: true, message: "Record added or updated successfully." });
-    });
-  },
-  
+    const { userId, movieId, isWished, isWatched } = req.body;
 
-  login: (req, res) => {
+    // SQL for updating or inserting into the Favorites table
+    const sql = `
+      INSERT INTO Favorites (user_id, movie_id, added_date, isWished, isWatched)
+      VALUES (?, ?, NOW(), ?, ?)
+      ON DUPLICATE KEY UPDATE isWished = ?, isWatched = ?`;
+
+    const params = [userId, movieId, isWished, isWatched, isWished, isWatched];
+
+    try {
+      const [result] = await pool.query(sql, params);
+      res.send({ success: true, message: "Record added or updated successfully." });
+    } catch (err) {
+      console.error("Error during data insertion or update:", err);
+      return res.status(500).send("Error inserting/updating data");
+    }
+  },
+
+  login: async (req, res) => {
     console.log("login in ");
     const { username, password } = req.body;
 
-    // 사용자 자격 증명 확인
-    const sql = 'SELECT user_id FROM user WHERE username = ? AND password = ?';
-    connection.query(sql, [username, password], (err, rows) => {
-        if (err) {
-            return res.status(500).send({ error: 'Database error' });
-        }
+    const sql = 'SELECT user_id, nickName FROM User WHERE username = ? AND password = ?';
 
-        // Check if user exists
-        if (rows.length > 0) {
-            const userId = rows[0].user_id; // Assuming user_id is the first field in the response
-            console.log("userId : " + userId);
-            return res.send({
-                success: true,
-                message: 'Login successful',
-                userId: userId, // Send user_id in the response
-            });
-        } else {
-            return res.status(401).send({
-                success: false,
-                message: 'Invalid username or password',
-            });
-        }
-    });
+    try {
+      const [rows] = await pool.query(sql, [username, password]);
+      if (rows.length > 0) {
+        const userId = rows[0].user_id;
+        const nickName = rows[0].nickName;
+        console.log("nickName : " + nickName);
+        return res.send({
+          success: true,
+          message: 'Login successful',
+          userId: userId,
+          nickName: nickName
+        });
+      } else {
+        return res.status(401).send({
+          success: false,
+          message: 'Invalid username or password',
+        });
+      }
+    } catch (err) {
+      console.error("Error during login:", err);
+      return res.status(500).send({ error: 'Database error' });
+    }
+  },
+
+  register: async (req, res) => {
+    console.log("Register backend in:");
+    const { username, password, nickName, region } = req.body;
+    console.log("username :" + username)
+
+    const checkSQL = 'SELECT * FROM User WHERE username = ?';
+    const registerSQL = 'INSERT INTO User (username, password, nickName, region, signup_date, role) VALUES (?, ?, ?, ?, CURDATE(), "user")';
+
+    try {
+      const [rows] = await pool.query(checkSQL, [username]);
+      console.log("rows:", rows);
+
+      if (rows.length > 0) {
+          console.log("username exists");
+          return res.status(400).json({ success: false, message: "ID already exists." });
+      }
+
+      const [newUser] = await pool.query(registerSQL, [username, password, nickName, region]);
+      if (newUser.affectedRows > 0) {
+        return res.status(201).json({ success: true, message: "User registered successfully." });
+      } else {
+        console.log("backend registration failed in :")
+        return res.status(400).json({ success: false, message: "Registration failed." });
+      }
+    } catch (err) {
+      console.error('Error during registration:', err);
+      return res.status(500).json({ success: false, message: 'Internal server error.' });
+    }
   }
 };
 

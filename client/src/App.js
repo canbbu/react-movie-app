@@ -13,6 +13,7 @@ import Register from "./Page/Register";
 function App() {
   const [login, setLogin] = useState(false);
   const [username, setUsername] = useState('');
+  const [nickName, setNickName] = useState('');
   const [searchKeyword, setSearchKeyword] = useState('');
   
 
@@ -20,10 +21,12 @@ function App() {
   useEffect(() => {
     const storedLogin = localStorage.getItem('login');
     const storedUsername = localStorage.getItem('username');
+    const storedNickName = localStorage.getItem('nickName');
     
     if (storedLogin === 'true' && storedUsername) {
       setLogin(true);
       setUsername(storedUsername);
+      setNickName(storedNickName);
     }
   }, []);
 
@@ -32,6 +35,7 @@ function App() {
       localStorage.removeItem('login');
       localStorage.removeItem('username');
       localStorage.removeItem('userId');
+      localStorage.removeItem('nickName');
       setLogin(false);
       setUsername('');
       setSearchKeyword('');
@@ -56,17 +60,19 @@ function App() {
       });
 
       const data = await response.json();
-      console.log("Fetched movie status data:", data); // Log the data to the console
 
       if (response.ok) {
         localStorage.setItem('login', 'true');
         localStorage.setItem('username', username);
         localStorage.setItem('userId', data.userId); // 유저 ID 저장
+        localStorage.setItem('nickName', data.nickName); // 유저 nickName 저장
 
         setLogin(true);
         setUsername(username);
+        setNickName(nickName);
       } else {
-        console.error(data.message || 'Login failed');
+        alert(data.message || 'Login failed');
+        return;
       }
     } catch (error) {
       console.error('Error during login:', error);
@@ -78,6 +84,7 @@ function App() {
       <HashRouter>
         <Toolbar
           login={login}
+          nickName = {nickName}
           handleLogout={handleLogout}
           searchKeyword={searchKeyword}
           handleValueChange={handleValueChange}
